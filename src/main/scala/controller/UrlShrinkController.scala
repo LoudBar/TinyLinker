@@ -35,16 +35,6 @@ class UrlShrinkController(implicit system: ActorSystem, executionContext: Execut
     }
   }
 
-  def checkUrl(shortenedUrl: String): Route = {
-    val originalUrlFuture = UrlShrinkService.retrieveOriginalUrl(shortenedUrl)
-    onSuccess(originalUrlFuture) {
-      case Some(originalUrl) => redirect(originalUrl, StatusCodes.Found)
-      case None =>
-        logger.warning(s"URL not found for shortened URL: $shortenedUrl")
-        complete(StatusCodes.NotFound)
-    }
-  }
-
   def redirectToOriginalUrl(shortenedUrl: String): Route = {
     val shortUrl = s"http://localhost:8080/$shortenedUrl"
     val originalUrlFuture = UrlShrinkService.retrieveOriginalUrl(s"http://localhost:8080/$shortenedUrl")
@@ -63,12 +53,6 @@ class UrlShrinkRoutes(urlShrinkController: UrlShrinkController) {
       post {
         entity(as[String]) { originalUrl =>
           urlShrinkController.shortenUrl(originalUrl)
-        }
-      }
-    } ~ path("check") {
-      get {
-        parameter("shortenedUrl") { shortenedUrl =>
-          urlShrinkController.checkUrl(shortenedUrl)
         }
       }
     } ~ path(Segment) { shortenedUrl =>

@@ -21,7 +21,7 @@ services:
       options:
         max-file: "5"
         max-size: "10m"
-#curl -X GET "http://localhost:8080/check?shortenedUrl=https://tl.jQ3VG9MFgsk"
+
   redis:
     image:
       loudbar/url-shrink_db

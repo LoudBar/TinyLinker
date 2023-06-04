@@ -32,7 +32,6 @@ object RedisDb {
       Option(jedis.get(url.shortenedUrl.value))
     })
   }
-
 }
 
 
