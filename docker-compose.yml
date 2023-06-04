@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+
+  application:
+    image:
+      loudbar/url-shrink
+    build:
+      dockerfile:
+        Dockerfile
+      context: .
+    container_name: application
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    environment:
+      - "REDIS_HOST=redis"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+#curl -X GET "http://localhost:8080/check?shortenedUrl=https://tl.jQ3VG9MFgsk"
+  redis:
+    image:
+      loudbar/url-shrink_db
+    build:
+      dockerfile:
+        Dockerfile
+      context: ./Redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-volume:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+volumes:
+  redis-volume:
+#    external: true
+
+networks:
+  cloud:
+    external: true
